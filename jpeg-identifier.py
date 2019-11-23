@@ -5,7 +5,7 @@ import sys
 print('Aplikasi Identifikasi file JPEG')
 print('dengan model Deterministic Finite State Automata (DFSA)')
 print('================================================================')
-print('Silakan ketikkan lokasi/path file yang akan diverifikasi..')
+print('Silakan ketikkan lokasi/path file yang akan diidentifikasi..')
 file = input('File path : ')
 
 def getSize(filename):
