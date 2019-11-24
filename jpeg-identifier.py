@@ -19,6 +19,7 @@ sys.setrecursionlimit(fsize)
 rlimit = sys.getrecursionlimit()
 fhead = False
 ffoot = False
+isjpeg = False
 
 fh = open(file, 'rb')
 
@@ -27,6 +28,7 @@ def main():
         state = 'start'
         byte = fh.read(1).hex()
         ofs = 0
+        cnjpeg = 0
         while byte != "":
             if(state=='start'):
                 state = 'q0'
@@ -73,19 +75,24 @@ def main():
                 if(q == True):
                     state = 'q5'
                     ffoot = True
-                    print('[' + byte + '] -> Q4(' + byte + ') -> Q5' + '(JPEG footer ditemukan pada offset ' + str(format(ofs, '02x')) + '.)')
+                    if(fhead == True):
+                        isjpeg = True
+                        print('[' + byte + '] -> Q4(' + byte + ') -> Q5' + '(JPEG footer ditemukan pada offset ' + str(format(ofs, '02x')) + '.)')
+                        cnjpeg += 1
+                        state = 'q0'
                 else:
                     state = 'q3'
                     ffoot = False
                     #print('[' + byte + '] -> Q4(' + byte + ') -> Q3')
+                
                     
             byte = fh.read(1).hex()
             ofs += 1
     finally:
         fh.close
         print('<<< EoF >>> : ' + str(format(ofs-1, '02x')))
-        if(fhead == True and ffoot == True):
-            print('Result : File JPEG teridentifikasi!')
+        if(isjpeg == True):
+            print('Result : ' + str(cnjpeg) + ' File JPEG teridentifikasi!')
         else:
             print('Result : Tidak ada file JPEG yang teridentifikasi!')
     fh.close()
